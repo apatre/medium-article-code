@@ -55,19 +55,19 @@ INSERT INTO `experimental_dataset.address`(
       STRUCT( "previous", "321 Main Street", "Hoboken", "NJ", 44444, 3)]);
 
 -- ALTER SQL script for the address table
-ALTER TABLE IF EXISTS `experimental_dataset.address`
-  ALTER COLUMN IF EXISTS id SET DATA TYPE (STRING);
+ALTER TABLE `experimental_dataset.address`
+  ALTER COLUMN  id SET DATA TYPE STRING;
 
 -- In Query editor copy paste the below statement
 SELECT
   * EXCEPT (addresses),
   ARRAY(
-    SELECT AS STRUCT(
-      addresses.* EXCEPT(zip, numberOfYears),
-      CAST(zip AS STRING) AS zip,
-      numberOfYears
-    )
-   FROM unnest(addresses)) AS addresses
+    SELECT AS STRUCT
+        nested_address.* EXCEPT(zip, numberOfYears),
+        CAST(zip AS STRING) AS zip,
+        numberOfYears
+      FROM unnest(addresses) AS nested_address
+    ) AS addresses
 FROM `experimental_dataset.address`;
 -- Click More and select Query settings.
 -- In the Destination section, do the following:
